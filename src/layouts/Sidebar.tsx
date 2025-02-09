@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ChevronDown, Settings, Tag } from 'lucide-react';
 
 interface SidebarProps {
@@ -9,46 +9,75 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ userName, userEmail }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const location = useLocation();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const isActiveRoute = (path: string) => {
+    return location.pathname === path;
+  };
+
   return (
     <div className="w-64 min-h-screen bg-gray-900 text-gray-300 p-4 flex flex-col">
-      {/* Blog title */}
       <div className="flex items-center space-x-2 mb-8">
         <span className="text-xl font-semibold">fz3hra's blog</span>
       </div>
 
-      {/* Posts section */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <span className="font-medium">Posts</span>
-          <button className="p-1 hover:bg-gray-800 rounded">+</button>
+          <Link to="/editor" className="p-1 hover:bg-gray-800 rounded">+</Link>
         </div>
         <nav className="space-y-1 pl-4 text-gray-400">
-          <Link to="/drafts" className="block p-2 hover:bg-gray-800 rounded-md">
+             <Link 
+            to="/" 
+            className={`block p-2 rounded-md ${
+              isActiveRoute('/') 
+                ? 'bg-gray-800 text-white' 
+                : 'hover:bg-gray-800'
+            }`}
+          >
+            All Posts
+          </Link>
+          <Link 
+            to="/drafts" 
+            className={`block p-2 rounded-md ${
+              isActiveRoute('/drafts') 
+                ? 'bg-gray-800 text-white' 
+                : 'hover:bg-gray-800'
+            }`}
+          >
             Drafts
           </Link>
-          <Link to="/scheduled" className="block p-2 hover:bg-gray-800 rounded-md">
-            Scheduled
-          </Link>
-          <Link to="/published" className="block p-2 hover:bg-gray-800 rounded-md">
+          <Link 
+            to="/published" 
+            className={`block p-2 rounded-md ${
+              isActiveRoute('/published') 
+                ? 'bg-gray-800 text-white' 
+                : 'hover:bg-gray-800'
+            }`}
+          >
             Published
           </Link>
         </nav>
       </div>
 
-      {/* Tags section */}
       <div className="mb-6">
-        <Link to="/tags" className="flex items-center space-x-2 p-2 hover:bg-gray-800 rounded-md text-gray-400">
+        <Link 
+          to="/tags" 
+          className={`flex items-center space-x-2 p-2 rounded-md ${
+            isActiveRoute('/tags') 
+              ? 'bg-gray-800 text-white' 
+              : 'hover:bg-gray-800 text-gray-400'
+          }`}
+        >
           <Tag className="w-5 h-5" />
           <span>Tags</span>
         </Link>
       </div>
 
-      {/* Bottom user section with dropdown */}
       <div className="mt-auto">
         <div className="relative">
           <button 
@@ -64,7 +93,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userName, userEmail }) => {
             <Settings className="w-5 h-5" />
           </button>
 
-          {/* Dropdown menu */}
           {isDropdownOpen && (
             <div className="absolute bottom-full left-0 w-full mb-2 bg-gray-800 rounded-md shadow-lg overflow-hidden">
               <div className="p-3 border-b border-gray-700">

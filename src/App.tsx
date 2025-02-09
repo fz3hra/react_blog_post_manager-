@@ -6,6 +6,8 @@ import LoginScreen from './components/auth/LoginScreen';
 import { AuthProvider } from './components/auth/AuthContext';
 import PrivateRoute from './components/auth/PrivateRoute';
 import RegisterScreen from './components/auth/RegisterScreen';
+import DraftsPage from './components/posts/DraftsPage';
+import PublishedPage from './components/posts/PublishedPage';
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
             }
           />
           <Route path="/editor/:id" element={<PostEditor />} />
+           <Route path="/drafts" element={ <PrivateRoute><DraftsPage /></PrivateRoute>} />
+      <Route path="/published" element={<PrivateRoute><PublishedPage /></PrivateRoute>} />
         </Routes>
       </AuthProvider>
     </Router>
