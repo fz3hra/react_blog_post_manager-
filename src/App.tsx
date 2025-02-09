@@ -5,6 +5,7 @@ import PostEditor from './components/posts/PostEditor';
 import LoginScreen from './components/auth/LoginScreen';
 import { AuthProvider } from './components/auth/AuthContext';
 import PrivateRoute from './components/auth/PrivateRoute';
+import RegisterScreen from './components/auth/RegisterScreen';
 
 function App() {
   return (
@@ -12,6 +13,8 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginScreen />} />
+          <Route path="/register" element={<RegisterScreen />} />
+
           <Route
             path="/"
             element={

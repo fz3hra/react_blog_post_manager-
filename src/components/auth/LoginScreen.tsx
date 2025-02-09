@@ -1,5 +1,5 @@
 import React, { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from './AuthContext';
 
 const LoginScreen: React.FC = () => {
@@ -78,6 +78,14 @@ const LoginScreen: React.FC = () => {
           >
             Login
           </button>
+            <div className="text-center mt-4">
+            <p className="text-sm text-gray-600">
+                Don't have an account?{' '}
+                <Link to="/register" className="text-black hover:underline">
+                Sign up here
+                </Link>
+            </p>
+            </div>
         </form>
       </div>
     </div>

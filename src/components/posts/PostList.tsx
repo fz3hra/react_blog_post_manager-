@@ -40,7 +40,7 @@ const PostList: React.FC = () => {
                   <div className="text-gray-400 text-sm">
                     By {post.createdBy} - {new Date(post.createdAt).toLocaleDateString()}
                   </div>
-                  {post.status === 0 && (
+                  {!post.isPublished && (
                     <div className="text-pink-500 text-sm">Draft</div>
                   )}
                 </div>
