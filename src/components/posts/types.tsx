@@ -1,11 +1,17 @@
 export interface Post {
-  id?: number;
-  title: string;
+  id: number;
   content: string;
+  createdAt: string;
+  createdBy: string;
+  status: number;
+  viewCount: number;
+  isPublished: boolean;
+  title: string;
+  description: string;
+  tags: string[];
+  featuredImageUrl: string | null;
+  excerpt: string;
   featuredImage: string | null;
-  author?: string;
-  createdAt?: string;
-  status?: 'Draft' | 'Published';  
 }
 
 export interface PostEditorProps {

@@ -1,56 +1,33 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { FormEvent, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Upload, ArrowLeft, HelpCircle } from 'lucide-react';
-
-interface Post {
-  title: string;
-  content: string;
-  featuredImage: string | null;
-}
+import PostSettings from './PostSettings';
+import { usePostEditor } from '../../hooks/usePostEditor';
 
 const PostEditor: React.FC = () => {
-  const navigate = useNavigate();
-  const [post, setPost] = useState<Post>({
-    title: '',
-    content: '',
-    featuredImage: null
-  });
-  const [wordCount, setWordCount] = useState<number>(0);
+  const { id } = useParams<{ id: string }>();
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [authors, setAuthors] = useState<string[]>(['Default Author']);
 
-  useEffect(() => {
-    const words = post.content.trim().split(/\s+/).filter(word => word.length > 0);
-    setWordCount(words.length);
-  }, [post.content]);
+  const {
+    post,
+    isLoading,
+    errorMessage,
+    wordCount,
+    handleTitleChange,
+    handleContentChange,
+    handleImageUpload,
+    handleRemoveImage,
+    handleTagsChange,
+    handleExcerptChange,
+    saveDraft,
+    publishPost,
+    deletePost,
+  } = usePostEditor({ postId: id });
 
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPost(prev => ({
-          ...prev,
-          featuredImage: reader.result as string
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate('/');
-  };
-
-  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPost(prev => ({ ...prev, title: e.target.value }));
-  };
-
-  const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setPost(prev => ({ ...prev, content: e.target.value }));
-  };
-
-  const handleRemoveImage = (): void => {
-    setPost(prev => ({ ...prev, featuredImage: null }));
+    await publishPost();
   };
 
   return (
@@ -58,25 +35,55 @@ const PostEditor: React.FC = () => {
       <div className="max-w-4xl mx-auto p-6">
         <header className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
-            <Link to="/" className="text-gray-400 hover:text-white">
+            <button
+              type="button"
+              onClick={saveDraft}
+              className="text-gray-400 hover:text-white"
+              disabled={isLoading}
+            >
               <ArrowLeft className="w-6 h-6" />
-            </Link>
+            </button>
             <span className="text-gray-400">Posts</span>
             <span className="text-gray-400">/</span>
             <span>New</span>
           </div>
+
+          <div className="flex space-x-4">
+            {post.title.trim() && post.content.trim() && (
+              <button
+                type="submit"
+                form="post-editor-form"
+                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-500 transition-colors"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Publishing...' : 'Publish'}
+              </button>
+            )}
+            <button
+              onClick={() => setShowSettings(!showSettings)}
+              className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
+            >
+              Open Settings
+            </button>
+          </div>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        {errorMessage && (
+          <div className="bg-red-500 text-white p-3 rounded mb-4">
+            {errorMessage}
+          </div>
+        )}
+
+        <form id="post-editor-form" onSubmit={handleSubmit} className="space-y-8">
           <div className="relative">
             {post.featuredImage ? (
               <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
-                <img 
-                  src={post.featuredImage} 
-                  alt="Featured" 
+                <img
+                  src={post.featuredImage}
+                  alt="Featured"
                   className="w-full h-full object-cover"
                 />
-                <button 
+                <button
                   type="button"
                   onClick={handleRemoveImage}
                   className="absolute top-2 right-2 bg-gray-800 p-2 rounded-full"
@@ -86,7 +93,7 @@ const PostEditor: React.FC = () => {
               </div>
             ) : (
               <div className="mb-8">
-                <label 
+                <label
                   htmlFor="feature-image"
                   className="flex items-center justify-center w-full h-48 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-gray-500 transition-colors"
                 >
@@ -130,6 +137,20 @@ const PostEditor: React.FC = () => {
           </div>
         </form>
       </div>
+
+      {showSettings && (
+        <div className="fixed top-0 right-0 w-80 h-full bg-gray-900 text-white shadow-lg z-50">
+          <PostSettings
+            tags={post.tags}
+            authors={authors}
+            excerpt={post.excerpt}
+            onUpdateTags={handleTagsChange}
+            onUpdateAuthors={setAuthors}
+            onUpdateExcerpt={handleExcerptChange}
+            onDelete={deletePost}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -8,7 +8,6 @@ import PrivateRoute from './components/auth/PrivateRoute';
 
 function App() {
   return (
-    // <BrowserRouter>
    <Router>
       <AuthProvider>
         <Routes>
@@ -17,7 +16,7 @@ function App() {
             path="/"
             element={
               <PrivateRoute>
-                <PostList posts={[]} />
+                <PostList />
               </PrivateRoute>
             }
           />
@@ -29,11 +28,10 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/editor/:id" element={<PostEditor />} />
         </Routes>
       </AuthProvider>
     </Router>
-    
-    
   );
 }
 

@@ -76,7 +76,7 @@ const LoginScreen: React.FC = () => {
             type="submit"
             className="w-full bg-black text-white py-3 px-4 rounded-md hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-      
+            Login
           </button>
         </form>
       </div>
