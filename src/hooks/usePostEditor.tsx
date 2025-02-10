@@ -7,6 +7,7 @@ interface Post {
   featuredImage: string | null;
   tags: string[];
   excerpt: string;
+  isPublished: boolean;
 }
 
 interface UsePostEditorProps {
@@ -36,7 +37,8 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     content: '',
     featuredImage: null,
     tags: [],
-    excerpt: ''
+    excerpt: '',
+    isPublished: false  
   });
   const [wordCount, setWordCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -73,6 +75,7 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
           featuredImage: data.post.featuredImageUrl,
           tags: data.post.tags || [],
           excerpt: data.post.excerpt || '',
+          isPublished: data.post.isPublished || false  
         });
       } else {
         throw new Error(data.message || 'Failed to fetch post');
@@ -117,14 +120,17 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     setPost((prev) => ({ ...prev, excerpt }));
   };
 
-  const createRequestBody = (isPublished: boolean) => ({
-    title: post.title,
-    description: post.content,
-    excerpt: post.excerpt,
-    tags: post.tags,
-    isPublished,
-    featuredImage: post.featuredImage,
-  });
+  const createRequestBody = (shouldPublish: boolean) => {
+   
+    return {
+      title: post.title,
+      description: post.content,
+      excerpt: post.excerpt,
+      tags: post.tags,
+      isPublished: shouldPublish,  
+      featuredImage: post.featuredImage,
+    };
+  };
 
   const makeApiRequest = async (method: string, endpoint: string, body: any) => {
     const token = localStorage.getItem('authToken');
@@ -155,7 +161,7 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     try {
       const endpoint = `http://localhost:8080/api/Post${postId ? `/${postId}` : ''}`;
       const method = postId ? 'PUT' : 'POST';
-      await makeApiRequest(method, endpoint, createRequestBody(false));
+      await makeApiRequest(method, endpoint, createRequestBody(false));  
       navigate('/');
     } catch (error: any) {
       console.error('Error saving draft:', error);
@@ -170,7 +176,10 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     setErrorMessage(null);
 
     try {
-      await makeApiRequest('POST', 'http://localhost:8080/api/Post', createRequestBody(true));
+      const endpoint = `http://localhost:8080/api/Post${postId ? `/${postId}` : ''}`;
+      const method = postId ? 'PUT' : 'POST';
+      
+      await makeApiRequest(method, endpoint, createRequestBody(true));
       navigate('/');
     } catch (error: any) {
       console.error('Error publishing post:', error);
