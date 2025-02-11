@@ -22,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userName, userEmail }) => {
   return (
     <div className="w-64 min-h-screen bg-gray-900 text-gray-300 p-4 flex flex-col">
       <div className="flex items-center space-x-2 mb-8">
-        <span className="text-xl font-semibold">fz3hra's blog</span>
+        <span className="text-xl font-semibold">Blog Post Manager</span>
       </div>
 
       <div className="mb-6">
@@ -64,7 +64,8 @@ const Sidebar: React.FC<SidebarProps> = ({ userName, userEmail }) => {
         </nav>
       </div>
 
-      <div className="mb-6">
+{/* TODO:add tags later */}
+      {/* <div className="mb-6">
         <Link 
           to="/tags" 
           className={`flex items-center space-x-2 p-2 rounded-md ${
@@ -76,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userName, userEmail }) => {
           <Tag className="w-5 h-5" />
           <span>Tags</span>
         </Link>
-      </div>
+      </div> */}
 
       <div className="mt-auto">
         <div className="relative">
