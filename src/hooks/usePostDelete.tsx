@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { makeApiRequest } from '../services/api';
+import { postApi } from '../services/api';
 
 interface ApiError {
   message: string;
@@ -18,7 +18,7 @@ export const usePostDelete = () => {
     }
 
     try {
-      await makeApiRequest('DELETE', `/Post/${postId}`);
+      await postApi.makeApiRequest('DELETE', `/Post/${postId}`);
       navigate('/');
       return true;
     } catch (error) {

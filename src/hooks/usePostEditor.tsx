@@ -1,5 +1,6 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { postApi } from '../services/api';
 interface Post {
   title: string;
   content: string;
@@ -32,14 +33,6 @@ interface ApiError {
   message: string;
   status?: number;
 }
-interface RequestBody {
-  title: string;
-  description: string;
-  excerpt: string;
-  tags: string[];
-  isPublished: boolean;
-  featuredImage: string | null;
-}
 
 export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEditorReturn => {
   const navigate = useNavigate();
@@ -69,35 +62,25 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
   }, [post.content]);
 
   const fetchPost = async (id: string) => {
-    try {
-      const token = localStorage.getItem('authToken');
-      if (!token) throw new Error('User is not authenticated');
-
-      const response = await fetch(`http://localhost:8080/api/Post/${id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+  try {
+    const data = await postApi.makeApiRequest('GET', `/Post/${id}`);
+    if (data.success) {
+      setPost({
+        title: data.post.title,
+        content: data.post.description || '',
+        featuredImage: data.post.featuredImageUrl || null,
+        tags: data.post.tags || [],
+        excerpt: data.post.excerpt || '',
+        isPublished: data.post.isPublished || false
       });
-
-      const data = await response.json();
-      if (response.ok && data.success) {
-        setPost({
-          title: data.post.title,
-          content: data.post.description || '',
-          featuredImage: data.post.featuredImageUrl || null,
-          tags: data.post.tags || [],
-          excerpt: data.post.excerpt || '',
-          isPublished: data.post.isPublished || false
-        });
-      } else {
-        throw new Error(data.message || 'Failed to fetch post');
-      }
-    } catch (error: unknown) {
-      console.error('Error fetching post:', error);
-      setErrorMessage('An error occurred while fetching the post');
+    } else {
+      throw new Error(data.message || 'Failed to fetch post');
     }
-  };
+  } catch (error: unknown) {
+    console.error('Error fetching post:', error);
+    setErrorMessage('An error occurred while fetching the post');
+  }
+};
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPost((prev) => ({ ...prev, title: e.target.value }));
@@ -146,36 +129,14 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
       featuredImage: post.featuredImage,
     };
   };
-
-    const makeApiRequest = async (method: string, endpoint: string, body: RequestBody) => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      throw new Error('User is not authenticated');
-    }
-
-    const response = await fetch(endpoint, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(body),
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || 'API request failed');
-    }
-    return data;
-  };
   const saveDraft = async () => {
     setIsLoading(true);
     setErrorMessage(null);
 
     try {
-      const endpoint = `http://localhost:8080/api/Post${postId ? `/${postId}` : ''}`;
+      const endpoint = `/Post${postId ? `/${postId}` : ''}`;
       const method = postId ? 'PUT' : 'POST';
-      await makeApiRequest(method, endpoint, createRequestBody(false));
+      await postApi.makeApiRequest(method, endpoint, createRequestBody(false));
       navigate('/');
     } catch (error) {
       const apiError = error as ApiError;
@@ -191,10 +152,10 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     setErrorMessage(null);
 
     try {
-      const endpoint = `http://localhost:8080/api/Post${postId ? `/${postId}` : ''}`;
+      const endpoint = `/Post${postId ? `/${postId}` : ''}`;
       const method = postId ? 'PUT' : 'POST';
 
-      await makeApiRequest(method, endpoint, createRequestBody(true));
+      await postApi.makeApiRequest(method, endpoint, createRequestBody(true));
       navigate('/');
     } catch (error) {
       const apiError = error as ApiError;

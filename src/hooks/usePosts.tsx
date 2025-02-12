@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Post } from '../components/posts/types';
+import { postApi } from '../services/api';
 
 interface ApiError {
   message: string;
@@ -16,26 +17,9 @@ const usePosts = () => {
       setIsLoading(true);
       setError(null);
 
-      const token = localStorage.getItem('authToken');
-
-      if (!token) {
-        setError('User is not authenticated.');
-        setIsLoading(false);
-        return;
-      }
-
       try {
-        const response = await fetch('http://localhost:8080/api/Post', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success) {
+        const data = await postApi.makeApiRequest('GET', '/Post');
+        if (data.success) {
           setPosts(data.posts);
         } else {
           throw new Error(data.message || 'Failed to fetch posts.');
