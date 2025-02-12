@@ -33,9 +33,6 @@ export class ApiService {
         ...(body && { body: JSON.stringify(body) }),
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-
       const text = await response.text();
       console.log('Response text:', text);
 
