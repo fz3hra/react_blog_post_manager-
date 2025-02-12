@@ -1,0 +1,81 @@
+.ql-editor {
+    min-height: 400px;
+    color: white !important;
+    background-color: transparent !important;
+    caret-color: white !important;
+}
+
+.ql-toolbar.ql-snow {
+    border: none !important;
+    background-color: rgba(31, 41, 55, 0.5) !important;
+    border-bottom: 1px solid rgba(75, 85, 99, 0.4) !important;
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+    padding: 8px !important;
+}
+
+.ql-container.ql-snow {
+    border: none !important;
+    font-size: 16px !important;
+}
+
+.ql-toolbar button svg,
+.ql-toolbar button:hover svg,
+.ql-toolbar button.ql-active svg,
+.ql-toolbar .ql-picker-label:hover,
+.ql-toolbar .ql-picker-label.ql-active,
+.ql-toolbar .ql-picker-item:hover,
+.ql-toolbar .ql-picker-item.ql-selected {
+    color: white !important;
+    stroke: white !important;
+}
+
+.ql-toolbar .ql-picker-label,
+.ql-toolbar .ql-picker-options {
+    color: white !important;
+    background-color: rgb(31, 41, 55) !important;
+}
+
+.ql-snow .ql-stroke {
+    stroke: white !important;
+}
+
+.ql-snow .ql-fill {
+    fill: white !important;
+}
+
+.ql-editor.ql-blank::before {
+    color: rgba(156, 163, 175, 0.6) !important;
+    font-style: normal !important;
+}
+
+.ql-snow .ql-picker-options {
+    background-color: rgb(31, 41, 55) !important;
+    border: 1px solid rgba(75, 85, 99, 0.4) !important;
+    border-radius: 0.375rem !important;
+}
+
+.ql-snow .ql-tooltip {
+    background-color: rgb(31, 41, 55) !important;
+    border: 1px solid rgba(75, 85, 99, 0.4) !important;
+    color: white !important;
+    border-radius: 0.375rem !important;
+    padding: 8px 12px !important;
+}
+
+.ql-snow .ql-tooltip input[type=text] {
+    background-color: rgba(17, 24, 39, 0.8) !important;
+    border: 1px solid rgba(75, 85, 99, 0.4) !important;
+    color: white !important;
+    border-radius: 0.25rem !important;
+    padding: 4px 8px !important;
+}
+
+.ql-snow .ql-tooltip a.ql-action,
+.ql-snow .ql-tooltip a.ql-remove {
+    color: rgb(96, 165, 250) !important;
+}
+
+.ql-snow .ql-tooltip a.ql-action:hover,
+.ql-snow .ql-tooltip a.ql-remove:hover {
+    text-decoration: underline !important;
+}

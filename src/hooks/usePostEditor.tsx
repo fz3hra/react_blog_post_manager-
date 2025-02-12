@@ -20,7 +20,7 @@ interface UsePostEditorReturn {
   errorMessage: string | null;
   wordCount: number;
   handleTitleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleContentChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  handleContentChange: (value: string) => void;
   handleImageUpload: (e: ChangeEvent<HTMLInputElement>) => void;
   handleRemoveImage: () => void;
   handleTagsChange: (tags: string[]) => void;
@@ -37,7 +37,7 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     featuredImage: null,
     tags: [],
     excerpt: '',
-    isPublished: false  
+    isPublished: false
   });
   const [wordCount, setWordCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -50,8 +50,10 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
   }, [postId]);
 
   useEffect(() => {
-    const words = post.content.trim().split(/\s+/).filter((word) => word.length > 0);
-    setWordCount(words.length);
+    if (typeof post.content === 'string') {
+      const words = post.content.trim().split(/\s+/).filter((word) => word.length > 0);
+      setWordCount(words.length);
+    }
   }, [post.content]);
 
   const fetchPost = async (id: string) => {
@@ -70,11 +72,11 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
       if (response.ok && data.success) {
         setPost({
           title: data.post.title,
-          content: data.post.description,
-          featuredImage: data.post.featuredImageUrl,
+          content: data.post.description || '',
+          featuredImage: data.post.featuredImageUrl || null,
           tags: data.post.tags || [],
           excerpt: data.post.excerpt || '',
-          isPublished: data.post.isPublished || false  
+          isPublished: data.post.isPublished || false
         });
       } else {
         throw new Error(data.message || 'Failed to fetch post');
@@ -89,8 +91,11 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     setPost((prev) => ({ ...prev, title: e.target.value }));
   };
 
-  const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setPost((prev) => ({ ...prev, content: e.target.value }));
+  const handleContentChange = (value: string) => {
+    if (typeof value === 'string') {
+      setPost((prev) => ({ ...prev, content: value }));
+      setWordCount(value.split(/\s+/).filter(Boolean).length);
+    }
   };
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -120,13 +125,12 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
   };
 
   const createRequestBody = (shouldPublish: boolean) => {
-   
     return {
       title: post.title,
       description: post.content,
       excerpt: post.excerpt,
       tags: post.tags,
-      isPublished: shouldPublish,  
+      isPublished: shouldPublish,
       featuredImage: post.featuredImage,
     };
   };
@@ -160,7 +164,7 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     try {
       const endpoint = `http://localhost:8080/api/Post${postId ? `/${postId}` : ''}`;
       const method = postId ? 'PUT' : 'POST';
-      await makeApiRequest(method, endpoint, createRequestBody(false));  
+      await makeApiRequest(method, endpoint, createRequestBody(false));
       navigate('/');
     } catch (error: any) {
       console.error('Error saving draft:', error);
@@ -177,7 +181,7 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     try {
       const endpoint = `http://localhost:8080/api/Post${postId ? `/${postId}` : ''}`;
       const method = postId ? 'PUT' : 'POST';
-      
+
       await makeApiRequest(method, endpoint, createRequestBody(true));
       navigate('/');
     } catch (error: any) {
@@ -187,8 +191,6 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
       setIsLoading(false);
     }
   };
-
-
 
   return {
     post,
