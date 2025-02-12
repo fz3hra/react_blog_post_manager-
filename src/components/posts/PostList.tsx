@@ -122,88 +122,100 @@ const PostList: React.FC = () => {
         <div className="max-w-5xl mx-auto">
           <header className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-semibold">Posts</h1>
-            <div className="flex space-x-2">
-              {posts.length > 0 && (
+            {posts.length > 0 && (
+              <div className="flex space-x-2">
                 <button
                   onClick={toggleSelectAll}
                   className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                 >
                   {selectedPosts.length === posts.length ? 'Deselect All' : 'Select All'}
                 </button>
-              )}
-              <Link
-                to="/editor"
-                className="bg-white text-black px-4 py-2 rounded-md hover:bg-gray-200"
-              >
-                New post
-              </Link>
-              {selectedPosts.length > 0 && (
-                <button
-                  onClick={handleBatchDelete}
-                  disabled={deletingPosts.length > 0}
-                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 disabled:opacity-50 flex items-center"
+                <Link
+                  to="/editor"
+                  className="bg-white text-black px-4 py-2 rounded-md hover:bg-gray-200"
                 >
-                  {deletingPosts.length > 0 ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Deleting...
-                    </>
-                  ) : (
-                    'Delete Selected'
-                  )}
-                </button>
-              )}
-            </div>
+                  New post
+                </Link>
+                {selectedPosts.length > 0 && (
+                  <button
+                    onClick={handleBatchDelete}
+                    disabled={deletingPosts.length > 0}
+                    className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 disabled:opacity-50 flex items-center"
+                  >
+                    {deletingPosts.length > 0 ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Deleting...
+                      </>
+                    ) : (
+                      'Delete Selected'
+                    )}
+                  </button>
+                )}
+              </div>
+            )}
           </header>
 
           <div className="space-y-6">
-            {posts.map((post) => (
-              <div
-                key={post.id}
-                className="flex items-start justify-between border-b border-gray-700 pb-6"
-              >
-                <div className="flex items-center space-x-4 w-full">
-                  <input
-                    type="checkbox"
-                    checked={selectedPosts.includes(post.id)}
-                    onChange={() => toggleSelection(post.id)}
-                    disabled={deletingPosts.includes(post.id)}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <div className="flex-1">
-                    <h2 className="text-xl font-medium">{post.title}</h2>
-                    <div className="text-gray-400 text-sm">
-                      By {post.createdBy} - {new Date(post.createdAt).toLocaleDateString()}
+            {posts.length === 0 ? (
+              <div className="flex flex-col items-center justify-center space-y-4 py-16 bg-gray-800 rounded-lg">
+                <p className="text-gray-400 text-lg">No posts yet</p>
+                <Link
+                  to="/editor"
+                  className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Create your first post
+                </Link>
+              </div>
+            ) : (
+              posts.map((post) => (
+                <div
+                  key={post.id}
+                  className="flex items-start justify-between border-b border-gray-700 pb-6"
+                >
+                  <div className="flex items-center space-x-4 w-full">
+                    <input
+                      type="checkbox"
+                      checked={selectedPosts.includes(post.id)}
+                      onChange={() => toggleSelection(post.id)}
+                      disabled={deletingPosts.includes(post.id)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <div className="flex-1">
+                      <h2 className="text-xl font-medium">{post.title}</h2>
+                      <div className="text-gray-400 text-sm">
+                        By {post.createdBy} - {new Date(post.createdAt).toLocaleDateString()}
+                      </div>
+                      {!post.isPublished && (
+                        <div className="text-pink-500 text-sm">Draft</div>
+                      )}
                     </div>
+                  </div>
+                  <div className="flex space-x-2">
                     {!post.isPublished && (
-                      <div className="text-pink-500 text-sm">Draft</div>
+                      <Link
+                        to={`/editor/${post.id}`}
+                        className="p-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
+                      >
+                        <Pencil className="w-5 h-5" />
+                      </Link>
                     )}
+                    <button
+                      onClick={() => handleDelete(post.id)}
+                      disabled={deletingPosts.includes(post.id)}
+                      className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
+                      title="Delete post"
+                    >
+                      {deletingPosts.includes(post.id) ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-5 h-5" />
+                      )}
+                    </button>
                   </div>
                 </div>
-                <div className="flex space-x-2">
-                  {!post.isPublished && (
-                    <Link
-                      to={`/editor/${post.id}`}
-                      className="p-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
-                    >
-                      <Pencil className="w-5 h-5" />
-                    </Link>
-                  )}
-                  <button
-                    onClick={() => handleDelete(post.id)}
-                    disabled={deletingPosts.includes(post.id)}
-                    className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
-                    title="Delete post"
-                  >
-                    {deletingPosts.includes(post.id) ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <Trash2 className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           <Modal

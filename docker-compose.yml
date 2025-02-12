@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  vite-app:
+    build: .
+    container_name: client_blog_post_manager
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - VITE_PORT=5173
+      - HOST=0.0.0.0
+    restart: unless-stopped

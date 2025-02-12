@@ -2,7 +2,7 @@
 
 The Blog Post Manager frontend is a modern web application built with React and TypeScript, providing a seamless user experience for managing blog posts. This document outlines how to run the project, explains our design choices, and describes the available features.
 
-## Running the Project
+## Running the Project - option 1
 
 To run the Blog Post Manager frontend, ensure you have Node.js version 14 or higher installed on your system. Then follow these steps:
 
@@ -19,6 +19,21 @@ npm run dev
 ```
 
 The application will be available at http://localhost:5173.
+
+## Running the Project - option 2
+
+The Blog Post Manager client can be run using Docker by following these two steps:
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+To stop the application, you can use the command:
+
+```bash
+docker compose down
+```
 
 ## Design Choices
 
@@ -124,3 +139,5 @@ If you encounter issues during setup or development:
 5. Verify backend services are running and accessible
 
 For additional help, consult the technical documentation or create an issue in the repository.
+
+## Snapshots:
