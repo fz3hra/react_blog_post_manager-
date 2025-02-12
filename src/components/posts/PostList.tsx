@@ -1,29 +1,79 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, X } from 'lucide-react';
 import MainLayout from '../../layouts/MainLayout';
 import usePosts from '../../hooks/usePosts';
 import { usePostDelete } from '../../hooks/usePostDelete';
+
+const Modal = ({ isOpen, onClose, onConfirm, title, description }: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  description: string;
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-gray-800 p-6 rounded-lg max-w-md w-full">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">{title}</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-white">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <p className="text-gray-300 mb-6">{description}</p>
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const PostList: React.FC = () => {
   const { posts, isLoading, error } = usePosts();
   const { deletePost } = usePostDelete();
   const [selectedPosts, setSelectedPosts] = useState<number[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState<number | null>(null);
+  const [isBatchDeleteModalOpen, setIsBatchDeleteModalOpen] = useState(false);
 
   const handleDelete = async (postId: number) => {
-    if (window.confirm('Are you sure you want to delete this post?')) {
-      const success = await deletePost(postId);
-      if (success) window.location.reload();
-    }
+    setPostToDelete(postId);
+    setIsDeleteModalOpen(true);
   };
 
-  const handleBatchDelete = async () => {
-    if (window.confirm('Are you sure you want to delete the selected posts?')) {
-      for (const postId of selectedPosts) {
-        await deletePost(postId);
-      }
-      window.location.reload();
+  const confirmDelete = async () => {
+    if (postToDelete) {
+      const success = await deletePost(postToDelete);
+      if (success) window.location.reload();
     }
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleBatchDelete = () => {
+    setIsBatchDeleteModalOpen(true);
+  };
+
+  const confirmBatchDelete = async () => {
+    for (const postId of selectedPosts) {
+      await deletePost(postId);
+    }
+    window.location.reload();
+    setIsBatchDeleteModalOpen(false);
   };
 
   const toggleSelection = (postId: number) => {
@@ -34,13 +84,16 @@ const PostList: React.FC = () => {
     );
   };
 
-  if (isLoading) {
-    return <div className="text-white text-center">Loading...</div>;
-  }
+  const toggleSelectAll = () => {
+    if (selectedPosts.length === posts.length) {
+      setSelectedPosts([]);
+    } else {
+      setSelectedPosts(posts.map(post => post.id));
+    }
+  };
 
-  if (error) {
-    return <div className="text-red-500 text-center">{error}</div>;
-  }
+  if (isLoading) return <div className="text-white text-center">Loading...</div>;
+  if (error) return <div className="text-red-500 text-center">{error}</div>;
 
   return (
     <MainLayout>
@@ -49,6 +102,14 @@ const PostList: React.FC = () => {
           <header className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-semibold">Posts</h1>
             <div className="flex space-x-2">
+              {posts.length > 0 && (
+                <button
+                  onClick={toggleSelectAll}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                >
+                  {selectedPosts.length === posts.length ? 'Deselect All' : 'Select All'}
+                </button>
+              )}
               <Link
                 to="/editor"
                 className="bg-white text-black px-4 py-2 rounded-md hover:bg-gray-200"
@@ -109,6 +170,22 @@ const PostList: React.FC = () => {
               </div>
             ))}
           </div>
+
+          <Modal
+            isOpen={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+            onConfirm={confirmDelete}
+            title="Delete Post"
+            description="Are you sure you want to delete this post? This action cannot be undone."
+          />
+
+          <Modal
+            isOpen={isBatchDeleteModalOpen}
+            onClose={() => setIsBatchDeleteModalOpen(false)}
+            onConfirm={confirmBatchDelete}
+            title="Delete Multiple Posts"
+            description={`Are you sure you want to delete ${selectedPosts.length} selected posts? This action cannot be undone.`}
+          />
         </div>
       </div>
     </MainLayout>
