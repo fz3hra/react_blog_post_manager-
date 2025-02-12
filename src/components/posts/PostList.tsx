@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Pencil, Trash2, X } from 'lucide-react';
+import { Pencil, Trash2, X, Loader2 } from 'lucide-react';
 import MainLayout from '../../layouts/MainLayout';
 import usePosts from '../../hooks/usePosts';
 import { usePostDelete } from '../../hooks/usePostDelete';
 
-const Modal = ({ isOpen, onClose, onConfirm, title, description }: {
+const Modal = ({ isOpen, onClose, onConfirm, title, description, isLoading }: {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   title: string;
   description: string;
+  isLoading?: boolean;
 }) => {
   if (!isOpen) return null;
 
@@ -19,7 +20,7 @@ const Modal = ({ isOpen, onClose, onConfirm, title, description }: {
       <div className="bg-gray-800 p-6 rounded-lg max-w-md w-full">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">{title}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
+          <button onClick={onClose} className="text-gray-400 hover:text-white" disabled={isLoading}>
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -27,15 +28,24 @@ const Modal = ({ isOpen, onClose, onConfirm, title, description }: {
         <div className="flex justify-end space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600"
+            className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 disabled:opacity-50"
+            disabled={isLoading}
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 flex items-center"
+            disabled={isLoading}
           >
-            Delete
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              'Delete'
+            )}
           </button>
         </div>
       </div>
@@ -44,24 +54,31 @@ const Modal = ({ isOpen, onClose, onConfirm, title, description }: {
 };
 
 const PostList: React.FC = () => {
-  const { posts, isLoading, error } = usePosts();
+  const { posts, isLoading, error, refetch } = usePosts();
   const { deletePost } = usePostDelete();
   const [selectedPosts, setSelectedPosts] = useState<number[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<number | null>(null);
   const [isBatchDeleteModalOpen, setIsBatchDeleteModalOpen] = useState(false);
+  const [deletingPosts, setDeletingPosts] = useState<number[]>([]);
 
-  const handleDelete = async (postId: number) => {
+  const handleDelete = (postId: number) => {
     setPostToDelete(postId);
     setIsDeleteModalOpen(true);
   };
 
   const confirmDelete = async () => {
     if (postToDelete) {
-      const success = await deletePost(postToDelete);
-      if (success) window.location.reload();
+      setDeletingPosts(prev => [...prev, postToDelete]);
+      try {
+        await deletePost(postToDelete);
+        await refetch();
+        setSelectedPosts(prev => prev.filter(id => id !== postToDelete));
+      } finally {
+        setDeletingPosts(prev => prev.filter(id => id !== postToDelete));
+        setIsDeleteModalOpen(false);
+      }
     }
-    setIsDeleteModalOpen(false);
   };
 
   const handleBatchDelete = () => {
@@ -69,11 +86,15 @@ const PostList: React.FC = () => {
   };
 
   const confirmBatchDelete = async () => {
-    for (const postId of selectedPosts) {
-      await deletePost(postId);
+    setDeletingPosts(selectedPosts);
+    try {
+      await Promise.all(selectedPosts.map(id => deletePost(id)));
+      await refetch();
+      setSelectedPosts([]);
+    } finally {
+      setDeletingPosts([]);
+      setIsBatchDeleteModalOpen(false);
     }
-    window.location.reload();
-    setIsBatchDeleteModalOpen(false);
   };
 
   const toggleSelection = (postId: number) => {
@@ -119,9 +140,17 @@ const PostList: React.FC = () => {
               {selectedPosts.length > 0 && (
                 <button
                   onClick={handleBatchDelete}
-                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                  disabled={deletingPosts.length > 0}
+                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 disabled:opacity-50 flex items-center"
                 >
-                  Delete Selected
+                  {deletingPosts.length > 0 ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    'Delete Selected'
+                  )}
                 </button>
               )}
             </div>
@@ -138,6 +167,7 @@ const PostList: React.FC = () => {
                     type="checkbox"
                     checked={selectedPosts.includes(post.id)}
                     onChange={() => toggleSelection(post.id)}
+                    disabled={deletingPosts.includes(post.id)}
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                   />
                   <div className="flex-1">
@@ -161,10 +191,15 @@ const PostList: React.FC = () => {
                   )}
                   <button
                     onClick={() => handleDelete(post.id)}
-                    className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                    disabled={deletingPosts.includes(post.id)}
+                    className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
                     title="Delete post"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    {deletingPosts.includes(post.id) ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -173,18 +208,20 @@ const PostList: React.FC = () => {
 
           <Modal
             isOpen={isDeleteModalOpen}
-            onClose={() => setIsDeleteModalOpen(false)}
+            onClose={() => deletingPosts.length === 0 && setIsDeleteModalOpen(false)}
             onConfirm={confirmDelete}
             title="Delete Post"
             description="Are you sure you want to delete this post? This action cannot be undone."
+            isLoading={deletingPosts.includes(postToDelete || -1)}
           />
 
           <Modal
             isOpen={isBatchDeleteModalOpen}
-            onClose={() => setIsBatchDeleteModalOpen(false)}
+            onClose={() => deletingPosts.length === 0 && setIsBatchDeleteModalOpen(false)}
             onConfirm={confirmBatchDelete}
             title="Delete Multiple Posts"
             description={`Are you sure you want to delete ${selectedPosts.length} selected posts? This action cannot be undone.`}
+            isLoading={deletingPosts.length > 0}
           />
         </div>
       </div>

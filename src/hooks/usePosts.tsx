@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Post } from '../components/posts/types';
 import { postApi } from '../services/api';
 
@@ -12,30 +12,30 @@ const usePosts = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setIsLoading(true);
-      setError(null);
+  const fetchPosts = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const data = await postApi.makeApiRequest('GET', '/Post');
-        if (data.success) {
-          setPosts(data.posts);
-        } else {
-          throw new Error(data.message || 'Failed to fetch posts.');
-        }
-      } catch (error) {
-        const apiError = error as ApiError;
-        setError(apiError.message || 'An unknown error occurred.');
-      } finally {
-        setIsLoading(false);
+    try {
+      const data = await postApi.makeApiRequest('GET', '/Post');
+      if (data.success) {
+        setPosts(data.posts);
+      } else {
+        throw new Error(data.message || 'Failed to fetch posts.');
       }
-    };
-
-    fetchPosts();
+    } catch (error) {
+      const apiError = error as ApiError;
+      setError(apiError.message || 'An unknown error occurred.');
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  return { posts, isLoading, error };
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  return { posts, isLoading, error, refetch: fetchPosts };
 };
 
 export default usePosts;
