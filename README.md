@@ -119,6 +119,25 @@ npm run build
 
 4. Submit a pull request with your changes.
 
+## Current Limitations
+
+### Image Upload Functionality
+
+The image upload functionality is currently not implemented due to cloud platform access constraints. Proper implementation of image management requires secure cloud infrastructure integration, which is pending. This limitation affects:
+
+1. Featured image uploads for blog posts
+2. In-content image management
+3. Media library functionality
+
+A complete image management solution will require:
+
+- Integration with a cloud storage platform (AWS S3, Google Cloud Storage, or Azure Blob Storage)
+- Content delivery network (CDN) setup for optimized image serving
+- Secure access control and authentication mechanisms
+- Image processing capabilities for resizing and optimization
+
+This functionality will be implemented once the necessary cloud platform access and infrastructure are established.
+
 ## Future Improvements
 
 We plan to implement several enhancements:
@@ -141,6 +160,7 @@ If you encounter issues during setup or development:
 For additional help, consult the technical documentation or create an issue in the repository.
 
 ## Snapshots:
+
 <img width="1440" alt="Screenshot 2025-02-12 at 18 21 02" src="https://github.com/user-attachments/assets/9b1aa17d-349b-4a2b-a55b-57877c798118" />
 <img width="1440" alt="Screenshot 2025-02-12 at 18 20 47" src="https://github.com/user-attachments/assets/a5794b98-5389-4375-8b2c-f54b15df00a7" />
 <img width="1440" alt="Screenshot 2025-02-12 at 18 20 41" src="https://github.com/user-attachments/assets/f43d218d-24d7-42e7-a2e4-d3feabaae5b0" />
@@ -165,5 +185,3 @@ For additional help, consult the technical documentation or create an issue in t
 <img width="1440" alt="Screenshot 2025-02-12 at 17 59 49" src="https://github.com/user-attachments/assets/17bb8434-c3a4-4284-a448-c4487ace4abe" />
 <img width="1440" alt="Screenshot 2025-02-12 at 17 59 25" src="https://github.com/user-attachments/assets/8094c1b0-1025-4aab-b6d5-7f1cc50d3c69" />
 <img width="1440" alt="Screenshot 2025-02-12 at 17 59 06" src="https://github.com/user-attachments/assets/32870bc4-b114-441e-82cd-34e2fb397b15" />
-
-
