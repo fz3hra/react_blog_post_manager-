@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ChevronDown, Settings, Tag } from 'lucide-react';
+import { ChevronDown, Settings } from 'lucide-react';
+import { useAuthContext } from '../components/auth/AuthContext';
 
-interface SidebarProps {
-  userName: string;
-  userEmail: string;
-}
 
-const Sidebar: React.FC<SidebarProps> = ({ userName, userEmail }) => {
+const Sidebar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
+  const { logout, user } = useAuthContext();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -18,6 +16,8 @@ const Sidebar: React.FC<SidebarProps> = ({ userName, userEmail }) => {
   const isActiveRoute = (path: string) => {
     return location.pathname === path;
   };
+
+  console.log("username", user?.userName)
 
   return (
     <div className="w-64 min-h-screen bg-gray-900 text-gray-300 p-4 flex flex-col">
@@ -87,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userName, userEmail }) => {
           >
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                {userName.charAt(0)}
+                {user?.userName.charAt(0)}
               </div>
               <ChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'transform rotate-180' : ''}`} />
             </div>
@@ -97,11 +97,11 @@ const Sidebar: React.FC<SidebarProps> = ({ userName, userEmail }) => {
           {isDropdownOpen && (
             <div className="absolute bottom-full left-0 w-full mb-2 bg-gray-800 rounded-md shadow-lg overflow-hidden">
               <div className="p-3 border-b border-gray-700">
-                <div className="font-medium">{userName}</div>
-                <div className="text-sm text-gray-500">{userEmail}</div>
+                <div className="font-medium">{user?.userName}</div>
+                <div className="text-sm text-gray-500">{user?.email}</div>
               </div>
               <button 
-                onClick={() => console.log('Sign out clicked')}
+                onClick={logout}
                 className="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700"
               >
                 Sign out

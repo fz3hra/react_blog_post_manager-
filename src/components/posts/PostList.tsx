@@ -1,11 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Pencil } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import MainLayout from '../../layouts/MainLayout';
 import usePosts from '../../hooks/usePosts';
+import { usePostDelete } from '../../hooks/usePostDelete';
 
 const PostList: React.FC = () => {
   const { posts, isLoading, error } = usePosts();
+  const { deletePost } = usePostDelete();
+
+  const handleDelete = async (postId: number) => {
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      const success = await deletePost(postId);
+      if (success) window.location.reload();
+    }
+  };
 
   if (isLoading) {
     return <div className="text-white text-center">Loading...</div>;
@@ -53,6 +62,13 @@ const PostList: React.FC = () => {
                     <Pencil className="w-5 h-5" />
                   </Link>
                 )}
+                <button
+                    onClick={() => handleDelete(post.id)}
+                    className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                    title="Delete post"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
             ))}

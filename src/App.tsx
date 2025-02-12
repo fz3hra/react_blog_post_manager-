@@ -11,31 +11,17 @@ import PublishedPage from './components/posts/PublishedPage';
 
 function App() {
   return (
-   <Router>
+    <Router>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<RegisterScreen />} />
-
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <PostList />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/editor"
-            element={
-              <PrivateRoute>
-                <PostEditor />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/editor/:id" element={<PostEditor />} />
-           <Route path="/drafts" element={ <PrivateRoute><DraftsPage /></PrivateRoute>} />
-      <Route path="/published" element={<PrivateRoute><PublishedPage /></PrivateRoute>} />
+          
+          <Route path="/" element={<PrivateRoute><PostList /></PrivateRoute>} />
+          <Route path="/editor" element={<PrivateRoute><PostEditor /></PrivateRoute>} />
+          <Route path="/editor/:id" element={<PrivateRoute><PostEditor /></PrivateRoute>} />
+          <Route path="/drafts" element={<PrivateRoute><DraftsPage /></PrivateRoute>} />
+          <Route path="/published" element={<PrivateRoute><PublishedPage /></PrivateRoute>} />
         </Routes>
       </AuthProvider>
     </Router>

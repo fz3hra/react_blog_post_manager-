@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Upload, ArrowLeft, HelpCircle } from 'lucide-react';
 import PostSettings from './PostSettings';
 import { usePostEditor } from '../../hooks/usePostEditor';
+import { usePostDelete } from '../../hooks/usePostDelete';
 
 const PostEditor: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,8 +23,8 @@ const PostEditor: React.FC = () => {
     handleExcerptChange,
     saveDraft,
     publishPost,
-    deletePost,
   } = usePostEditor({ postId: id });
+  const { deletePost } = usePostDelete();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -147,7 +148,7 @@ const PostEditor: React.FC = () => {
             onUpdateTags={handleTagsChange}
             onUpdateAuthors={setAuthors}
             onUpdateExcerpt={handleExcerptChange}
-            onDelete={deletePost}
+            onDelete={() => deletePost(parseInt(id!))}
           />
         </div>
       )}

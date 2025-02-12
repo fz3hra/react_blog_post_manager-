@@ -27,7 +27,6 @@ interface UsePostEditorReturn {
   handleExcerptChange: (excerpt: string) => void;
   saveDraft: () => Promise<void>;
   publishPost: () => Promise<void>;
-  deletePost: () => Promise<void>;
 }
 
 export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEditorReturn => {
@@ -189,20 +188,7 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     }
   };
 
-  const deletePost = async () => {
-    if (!postId) {
-      setErrorMessage('No post ID found, unable to delete.');
-      return;
-    }
 
-    try {
-      await makeApiRequest('DELETE', `http://localhost:8080/api/Post/${postId}`, null);
-      navigate('/');
-    } catch (error: any) {
-      console.error('Error deleting post:', error);
-      setErrorMessage(error.message || 'An unknown error occurred');
-    }
-  };
 
   return {
     post,
@@ -217,6 +203,5 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     handleExcerptChange,
     saveDraft,
     publishPost,
-    deletePost,
   };
 };
