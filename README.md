@@ -1,4 +1,4 @@
-<img width="1440" alt="Screenshot 2025-02-12 at 17 59 06" src="https://github.com/user-attachments/assets/55b074ee-0682-473f-ab4d-c4e0aead435a" /># Blog Post Manager - Frontend
+# Blog Post Manager - Frontend
 
 The Blog Post Manager frontend is a modern web application built with React and TypeScript, providing a seamless user experience for managing blog posts. This document outlines how to run the project, explains our design choices, and describes the available features.
 
