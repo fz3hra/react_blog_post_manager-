@@ -60,21 +60,21 @@ Users can manage their blog posts through a comprehensive set of features:
 
 - Creation and editing of posts with real-time preview
 - Support for draft and published states
-
 - Word count tracking
+- Batch deletion
 
 ### Additional Features
 
 We've implemented several features to enhance the user experience:
 
 - Real-time word count tracking
+- Rich text editing capabilities
+- Session persistence across page refreshes
 
 ### To come
 
 - Featured image upload and management
 - Tag management system
-- Rich text editing capabilities
-- Session persistence across page refreshes
 - Auto-save functionality for drafts
 - Image optimization for uploaded content
 - Tag suggestions based on post content
@@ -108,7 +108,6 @@ npm run build
 
 We plan to implement several enhancements:
 
-- Integration with rich text editor libraries
 - Advanced image editing capabilities
 - Social media preview generation
 - Analytics dashboard for post performance
