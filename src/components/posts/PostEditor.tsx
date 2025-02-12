@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Upload, ArrowLeft, HelpCircle } from 'lucide-react';
 import ReactQuill from 'react-quill';
@@ -11,8 +11,6 @@ import { usePostDelete } from '../../hooks/usePostDelete';
 const PostEditor: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [showSettings, setShowSettings] = useState<boolean>(false);
-  const [authors, setAuthors] = useState<string[]>(['Default Author']);
-
   const {
     post,
     isLoading,
@@ -152,10 +150,8 @@ const PostEditor: React.FC = () => {
         <div className="fixed top-0 right-0 w-80 h-full bg-gray-900 text-white shadow-lg z-50">
           <PostSettings
             tags={post.tags}
-            authors={authors}
             excerpt={post.excerpt}
             onUpdateTags={handleTagsChange}
-            onUpdateAuthors={setAuthors}
             onUpdateExcerpt={handleExcerptChange}
             onDelete={() => deletePost(parseInt(id!))}
           />

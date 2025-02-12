@@ -1,6 +1,5 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 interface Post {
   title: string;
   content: string;
@@ -27,6 +26,19 @@ interface UsePostEditorReturn {
   handleExcerptChange: (excerpt: string) => void;
   saveDraft: () => Promise<void>;
   publishPost: () => Promise<void>;
+}
+
+interface ApiError {
+  message: string;
+  status?: number;
+}
+interface RequestBody {
+  title: string;
+  description: string;
+  excerpt: string;
+  tags: string[];
+  isPublished: boolean;
+  featuredImage: string | null;
 }
 
 export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEditorReturn => {
@@ -135,7 +147,7 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     };
   };
 
-  const makeApiRequest = async (method: string, endpoint: string, body: any) => {
+    const makeApiRequest = async (method: string, endpoint: string, body: RequestBody) => {
     const token = localStorage.getItem('authToken');
     if (!token) {
       throw new Error('User is not authenticated');
@@ -156,7 +168,6 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
     }
     return data;
   };
-
   const saveDraft = async () => {
     setIsLoading(true);
     setErrorMessage(null);
@@ -166,9 +177,10 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
       const method = postId ? 'PUT' : 'POST';
       await makeApiRequest(method, endpoint, createRequestBody(false));
       navigate('/');
-    } catch (error: any) {
+    } catch (error) {
+      const apiError = error as ApiError;
       console.error('Error saving draft:', error);
-      setErrorMessage(error.message || 'An unknown error occurred');
+      setErrorMessage(apiError.message || 'An unknown error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -184,9 +196,10 @@ export const usePostEditor = ({ postId }: UsePostEditorProps = {}): UsePostEdito
 
       await makeApiRequest(method, endpoint, createRequestBody(true));
       navigate('/');
-    } catch (error: any) {
+    } catch (error) {
+      const apiError = error as ApiError;
       console.error('Error publishing post:', error);
-      setErrorMessage(error.message || 'An unknown error occurred');
+      setErrorMessage(apiError.message || 'An unknown error occurred');
     } finally {
       setIsLoading(false);
     }

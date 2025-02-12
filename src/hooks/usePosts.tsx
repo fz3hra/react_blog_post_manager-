@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Post } from '../components/posts/types';
 
+interface ApiError {
+  message: string;
+  status?: number;
+}
+
 const usePosts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -35,8 +40,9 @@ const usePosts = () => {
         } else {
           throw new Error(data.message || 'Failed to fetch posts.');
         }
-      } catch (err: any) {
-        setError(err.message || 'An unknown error occurred.');
+      } catch (error) {
+        const apiError = error as ApiError;
+        setError(apiError.message || 'An unknown error occurred.');
       } finally {
         setIsLoading(false);
       }

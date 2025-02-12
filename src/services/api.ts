@@ -1,6 +1,16 @@
+interface RequestBody {
+  title: string;
+  description: string;
+  excerpt: string;
+  tags: string[];
+  isPublished: boolean;
+  featuredImage: string | null;
+}
+
 const BASE_URL = 'http://localhost:8080/api';
 
-export const makeApiRequest = async (method: string, endpoint: string, body: any = null) => {
+
+export const makeApiRequest = async (method: string, endpoint: string, body?: RequestBody) => {
   const token = localStorage.getItem('authToken');
   if (!token) throw new Error('User is not authenticated');
 

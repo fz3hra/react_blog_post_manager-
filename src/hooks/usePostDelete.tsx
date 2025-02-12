@@ -2,6 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { makeApiRequest } from '../services/api';
 
+interface ApiError {
+  message: string;
+  status?: number;
+}
+
 export const usePostDelete = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
@@ -16,8 +21,9 @@ export const usePostDelete = () => {
       await makeApiRequest('DELETE', `/Post/${postId}`);
       navigate('/');
       return true;
-    } catch (error: any) {
-      setError(error.message || 'An unknown error occurred');
+    } catch (error) {
+    const apiError = error as ApiError;
+      setError(apiError.message || 'An unknown error occurred');
       return false;
     }
   };
