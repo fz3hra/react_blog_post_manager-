@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Upload, ArrowLeft, HelpCircle } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
@@ -10,6 +10,7 @@ import { usePostDelete } from '../../hooks/usePostDelete';
 
 const PostEditor: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const {
     post,
@@ -27,7 +28,7 @@ const PostEditor: React.FC = () => {
   } = usePostEditor({ postId: id });
   const { deletePost } = usePostDelete();
 
-   const modules = {
+  const modules = {
     toolbar: [
       [{ 'header': [1, 2, false] }],
       ['bold', 'italic', 'underline', 'strike'],
@@ -44,6 +45,17 @@ const PostEditor: React.FC = () => {
     'link', 'image'
   ];
 
+  const handleBack = () => {
+    const trimmedTitle = post.title.trim();
+    const trimmedContent = post.content.trim();
+
+    if (!trimmedTitle || !trimmedContent) {
+      navigate('/');
+      return;
+    }
+
+    saveDraft();
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -51,7 +63,7 @@ const PostEditor: React.FC = () => {
         <header className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
             <button
-              onClick={saveDraft}
+              onClick={handleBack}
               className="text-gray-400 hover:text-white"
               disabled={isLoading}
             >
