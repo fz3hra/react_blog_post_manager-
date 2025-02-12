@@ -1,4 +1,4 @@
-# Blog Post Manager - Frontend
+<img width="1440" alt="Screenshot 2025-02-12 at 17 59 06" src="https://github.com/user-attachments/assets/55b074ee-0682-473f-ab4d-c4e0aead435a" /># Blog Post Manager - Frontend
 
 The Blog Post Manager frontend is a modern web application built with React and TypeScript, providing a seamless user experience for managing blog posts. This document outlines how to run the project, explains our design choices, and describes the available features.
 
@@ -141,3 +141,29 @@ If you encounter issues during setup or development:
 For additional help, consult the technical documentation or create an issue in the repository.
 
 ## Snapshots:
+<img width="1440" alt="Screenshot 2025-02-12 at 18 21 02" src="https://github.com/user-attachments/assets/9b1aa17d-349b-4a2b-a55b-57877c798118" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 20 47" src="https://github.com/user-attachments/assets/a5794b98-5389-4375-8b2c-f54b15df00a7" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 20 41" src="https://github.com/user-attachments/assets/f43d218d-24d7-42e7-a2e4-d3feabaae5b0" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 20 38" src="https://github.com/user-attachments/assets/078f7e95-d344-426b-ac5a-8854603641c4" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 20 19" src="https://github.com/user-attachments/assets/2e42267e-cf70-43c7-9266-232885180b3f" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 20 14" src="https://github.com/user-attachments/assets/fc9eaa81-076e-47a4-9689-274244c61343" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 20 11" src="https://github.com/user-attachments/assets/59014418-3788-4b0d-a5a4-8f6898b1fed5" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 20 04" src="https://github.com/user-attachments/assets/f7b03eb6-f038-49bd-8f71-f321dfed9484" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 19 58" src="https://github.com/user-attachments/assets/3a188fd0-7699-4859-87e4-b80a4b042a1b" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 19 53" src="https://github.com/user-attachments/assets/da89033b-6a08-4658-8f11-d849f881dee9" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 19 40" src="https://github.com/user-attachments/assets/7d28f853-0668-49d5-a6d8-41a539bb5d76" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 19 17" src="https://github.com/user-attachments/assets/d350d34e-c424-405f-ada6-d9a1ace49858" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 18 49" src="https://github.com/user-attachments/assets/159d288c-b88c-4fc8-a4b8-2d9a7706b379" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 18 35" src="https://github.com/user-attachments/assets/a9e14376-6e7a-44bf-9ed6-df8e1dc802bd" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 15 33" src="https://github.com/user-attachments/assets/e976988d-cbfe-4d56-bfa0-16c75d427b34" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 15 28" src="https://github.com/user-attachments/assets/8811c19d-7115-4154-a6fe-e33d74aba076" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 15 17" src="https://github.com/user-attachments/assets/254d7871-0141-48d0-9c86-f235b89e975d" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 14 28" src="https://github.com/user-attachments/assets/9d1afe05-a6b3-4547-b30b-2dc4487e50e7" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 00 26" src="https://github.com/user-attachments/assets/d2fcc506-1784-4063-adb6-c07761588c3f" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 00 20" src="https://github.com/user-attachments/assets/95fc84d2-94bb-4824-98b3-121048f68c29" />
+<img width="1440" alt="Screenshot 2025-02-12 at 18 00 13" src="https://github.com/user-attachments/assets/b1caa9b4-1351-4c1d-b223-cc0b4e6afef0" />
+<img width="1440" alt="Screenshot 2025-02-12 at 17 59 49" src="https://github.com/user-attachments/assets/17bb8434-c3a4-4284-a448-c4487ace4abe" />
+<img width="1440" alt="Screenshot 2025-02-12 at 17 59 25" src="https://github.com/user-attachments/assets/8094c1b0-1025-4aab-b6d5-7f1cc50d3c69" />
+<img width="1440" alt="Screenshot 2025-02-12 at 17 59 06" src="https://github.com/user-attachments/assets/32870bc4-b114-441e-82cd-34e2fb397b15" />
+
+
